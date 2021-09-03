@@ -1,0 +1,200 @@
+#######################################################
+# Name:   Kostas Spyropoulos
+# Class:   CIS-1400-NET07
+# Purpose: Create An Address Book Of up to 10 People's Zip Codes, Names,
+# & Vaccines Which Contains A Search Feature For The Names,
+# an update feature, & show reports feature
+#######################################################
+
+print('\n**  Kostas Spyropoulos  **\n')  # Display author's name
+
+# Named Constants
+SIZE = 10 # Size declarator is 10 for up to 10 people in the address book
+
+def main():
+    # Declare arrays 
+    names = [0] * SIZE
+    zip_codes = [''] * SIZE
+    vaccines = [''] * SIZE
+    
+    menu_selection = 0  # Initialize to start loop
+
+    # Main menu loop
+    while menu_selection != '':
+        # Display the menu and get the user's selection
+        menu_selection = display_menu()
+
+        # Perform the selected operation
+        # Enter records for option 1 
+        if menu_selection == '1':
+            counter = 0
+            # Ask for names
+            names[counter] = input('Enter names #' + str(counter+1) + ':<Enter to exit>')
+            # Keep loop running until 10 people are entered or until Enter is pressed
+            while counter < SIZE and names[counter] != '':
+                # Ask for zip codes 
+                zip_codes[counter] = input('Enter the zip code: #'+ str(counter+1) + ':')
+                # verify zip codes are five digits 
+                while len(zip_codes[counter]) != 5 or not zip_codes[counter].isdigit():
+                    print('Error: Your zip code must be five digits')
+                    zip_codes[counter] = input('Enter the zip code: #'+ str(counter+1) + ':')
+                # Ask for vaccines 
+                vaccines[counter] = input('Enter vaccine #'+ str(counter+1) + ':')
+                # Make sure vaccine is J, M, P, or ''
+                while vaccines[counter] != 'J' and vaccines[counter] != 'M' and vaccines[counter] != 'P' and vaccines[counter] != '':
+                    print('Error: Your vaccine must be J, M, P or empty')
+                    vaccines[counter] = input('Enter vaccine #'+ str(counter+1) + ':')
+                # Increase counter by 1 
+                counter = counter + 1
+                # if counter is less than size continue entering names
+                if counter < SIZE:
+                    names[counter] = input('Enter names #' + str(counter+1) + ':<Enter to exit>')
+            # Run bubblesort3 module
+            bubblesort3(names,zip_codes,vaccines)
+        # Option 2 to search and update information
+        elif menu_selection == '2':
+            # ASk for search_value
+            search_value = input('Enter name to search for <or Enter to exit>:')
+            # while search is not blank continue to search for seach_value in names[counter]
+            while search_value != '':
+                found = False
+                # Check all elements in names[counter] to find search_value in the array
+                for counter in range(0,SIZE):
+                    # if search_value is found, display persons's name, zip codes, and vaccine
+                    if search_value == names[counter]:
+                        # Display Name, Zip Code, and Vaccine if value is found
+                        found = True
+                        print()
+                        print('Name Found:', names[counter])
+                        print('Zip Code:' + zip_codes[counter])
+                        # if vaccines[counter] is blank in the array label vaccine as None
+                        if vaccines[counter] == '':
+                            print('Vaccine: None')
+                        # if vaccines[counter] is not blank in the array leave vaccine as is 
+                        elif vaccines[counter] != '':
+                            print('Vaccine:' + vaccines[counter])
+                        # Update vaccine information for name searched
+                        vaccines[counter] = input('Update vaccine information:')
+                        # Make sure vaccine entered is an available vaccine or is blank
+                        while vaccines[counter] != 'J' and vaccines[counter] != 'M' and vaccines[counter] != 'P' and vaccines[counter] != '':
+                            print('Error: Your vaccine must be J, M, P or empty')
+                            vaccines[counter] = input('Update vaccine information:')
+                # If search_value is not found display 'Name not found'
+                if not found:
+                    print()
+                    print('Name not found')
+                # Ask user for another search_value and user has the option to stop
+                # searching
+                print()
+                search_value = input('Enter name to search for <or Enter to exit>:')
+        # Option 3 to run reports
+        elif menu_selection == '3':
+            # Display menu 
+            prompt = '0'
+            print('1 - Display test results by Zip Code')
+            print('2 - Display total results')
+            # while prompt is not blank enter the selection for an option
+            while prompt != '':
+                # Enter option
+                prompt = str(input('Enter selection:<Enter to exit>:'))
+                # Option 1 in submenu that shows test results by zip code
+                if prompt == '1':
+                    # Print headers for the report 
+                    print('Test results by zip code')
+                    print('Zipcode'.ljust(30,' '),'John & Johnson'.ljust(30,' '),'Moderna'.ljust(30,' '),'Pfizer'.ljust(30,' '),'None'.ljust(30,' '))
+                    print('----'.ljust(30,' '), '----'.ljust(30,' '), '----'.ljust(30,' '),'----'.ljust(30,' '),'----'.ljust(30,' '))
+                    # zip_codes is equal to first element in zip_codes array
+                    zip_code = zip_codes[0]
+                    # Variables to later count vaccine amounts
+                    count_J = 0
+                    count_M = 0
+                    count_P = 0
+                    count_blank = 0 
+                    # Run for loop to check all elements in array
+                    for counter in range(0,SIZE):
+                        # if zip_code does not equal zip_codes[counter] and does not equal blank,
+                        # print zip_code, count_J for Johnson & Johnson vaccines, count_M for Moderna,
+                        # count_P for Pfizer, and count_blank for no vaccine for the zip code
+                        if zip_code != zip_codes[counter]:
+                            if zip_code != '':
+                                print(zip_code.ljust(30,' '), str(count_J).ljust(30,' '), str(count_M).ljust(30,' '),str(count_P).ljust(30,' '),str(count_blank).ljust(30,' '))
+                            
+                            zip_code = zip_codes[counter]
+                            # Reset variables to zero to then count vaccine amounts of next zip code
+                            count_J = 0
+                            count_M = 0
+                            count_P = 0
+                            count_blank = 0
+                        # if vaccines[counter] equals to J, increase count_J by 1
+                        if vaccines[counter] == 'J':
+                            count_J = count_J + 1
+                        # if vaccines[counter] equals to M, increase count_M by 1
+                        elif vaccines[counter] == 'M':
+                            count_M = count_M + 1
+                        # if vaccines[counter] equals to P, increase count_P by 1
+                        elif vaccines[counter] == 'P':
+                            count_P = count_P + 1
+                        # if vaccines[counter] equals to '', increase count_blank by 1
+                        elif vaccines[counter] == '':
+                            count_blank = count_blank + 1
+                    # if zip_codes is not blank, print zip_codes, count_J, count_M, count_P, and count_blank
+                    if zip_code != '':
+                        print(zip_code.ljust(30,' '), str(count_J).ljust(30,' '), str(count_M).ljust(30,' '),str(count_P).ljust(30,' '),str(count_blank).ljust(30,' '))
+                # Option 2 of submenu shows total test results    
+                elif prompt == '2':
+                    # Header for total test results
+                    print('Total results')
+                    print('Pfizer'.ljust(30,' '),'Moderna'.ljust(30,' '),'Johnson & Johnson'.ljust(30,' '),'None'.ljust(30,' '))
+                    print('----'.ljust(30,' '), '----'.ljust(30,' '), '----'.ljust(30,' '),'----'.ljust(30,' '))
+                    # Variables to count vaccines and absence of vaccines
+                    count_J = 0
+                    count_M = 0
+                    count_P = 0
+                    count_blank = 0 
+                    # Check all elements in vaccines[counter] to count amount of each vaccine and absences of vaccine
+                    for counter in range(0,SIZE):
+                        # if zip_codes[counter] does not equal blank, 
+                        # count amount of each vaccine and absences of vaccine
+                        if zip_codes[counter] != '':
+                            # if vaccines[counter] equals J, increase count_J by 1
+                            if vaccines[counter] == 'J':
+                                count_J = count_J + 1
+                            # if vaccines[counter] equals M, increase count_M by 1
+                            elif vaccines[counter] == 'M':
+                                count_M = count_M + 1
+                            # if vaccines[counter] equals P, increase count_P by 1
+                            elif vaccines[counter] == 'P':
+                                count_P = count_P + 1
+                            # if vaccines[counter] equals blank, increase count_blank by 1
+                            elif vaccines[counter] == '':
+                                count_blank = count_blank + 1
+                    # print total amount of each vaccine and the absences of vaccine
+                    print(str(count_P).ljust(30,' '), str(count_M).ljust(30,' '),str(count_J).ljust(30,' '),str(count_blank).ljust(30,' '))
+
+
+def display_menu():
+    # Show the menu.
+    print('1 - Enter records')
+    print('2 - Update records')
+    print('3 - Run reports')
+    print()
+    # Ask user for a selection
+    menu_selection = str(input('Enter your selection<Enter to exit>: '))
+    # Verify the menu selection
+    return menu_selection  # return the selection
+
+
+def bubblesort3(names,zips,results):
+    # for loops to sort zip codes from first element to last element of all three arrays in ascending order
+    for i in range (0, len(zips) - 1):
+        for j in range (0, len(zips) - 1 - i):
+            if zips [j] > zips [j+1]:
+                # if a zip code swaps places with a zip code,
+                # the corresponding names and corresponding vaccines to the zip codes swapped
+                # must also swap according to the corresponding places in their respective
+                # arrays along with the zip code
+                zips [j], zips[j+1] = zips[j+1], zips [j]
+                names [j], names[j+1] = names[j+1], names [j]
+                results[j], results[j+1] = results[j+1], results [j]
+
+main()
